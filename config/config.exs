@@ -23,6 +23,10 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :real_deal_api, RealDealApiWeb.Auth.Guardian,
+  issuer: "real_deal_api",
+  secret_key: "A2QhoBW5+qU4F79ac7Ozo4fUlRpzkeHOYORgJkCazWjvOH22e3esAjryekV/+5Qs"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
