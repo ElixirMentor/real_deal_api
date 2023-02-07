@@ -85,19 +85,11 @@ defmodule RealDealApiWeb.AccountController do
     |> render("account_token.json", %{account: account, token: new_token})
   end
 
-  defp refresh_session_validation({:ok, value}) do
-    value
-  end
+  defp refresh_session_validation({:ok, value}), do: value
 
-  defp refresh_session_validation({:ok, _old, {value, _claims}}) do
-    value
-  end
+  defp refresh_session_validation({:ok, _old, {value, _claims}}), do: value
 
-  defp refresh_session_validation({:error, _reason}) do
-    raise ErrorResponse.NotFound
-  end
-
-
+  defp refresh_session_validation({:error, _reason}), do: raise ErrorResponse.NotFound
 
   def sign_out(conn, %{}) do
     account = conn.assigns[:account]
