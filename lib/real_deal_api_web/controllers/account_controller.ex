@@ -44,9 +44,7 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
-  @doc """
-  Left this commented code to match video, but refactored below for readability
-  """
+  # Left this commented code to match video, but refactored below for readability
   # def refresh_session(conn, %{}) do
   #   old_token = Guardian.Plug.current_token(conn)
   #   case Guardian.decode_and_verify(old_token) do
