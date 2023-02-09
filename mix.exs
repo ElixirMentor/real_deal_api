@@ -5,7 +5,7 @@ defmodule RealDealApi.MixProject do
     [
       app: :real_deal_api,
       version: "0.1.0",
-      elixir: "~> 1.12",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
