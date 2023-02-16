@@ -44,52 +44,24 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
-  # Left this commented code to match video, but refactored below for readability
-  # def refresh_session(conn, %{}) do
-  #   old_token = Guardian.Plug.current_token(conn)
-  #   case Guardian.decode_and_verify(old_token) do
-  #     {:ok, claims} ->
-  #       case Guardian.resource_from_claims(claims) do
-  #         {:ok, account} ->
-  #           {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
-  #           conn
-  #           |> Plug.Conn.put_session(:account_id, account.id)
-  #           |> put_status(:ok)
-  #           |> render("account_token.json", %{account: account, token: new_token})
-  #         {:error, _reason} ->
-  #           raise ErrorResponse.NotFound
-  #       end
-  #     {:error, _reason} ->
-  #       raise ErrorResponse.NotFound
-  #   end
-  # end
-
-  @doc """
-  Removed case statements and added multiple function clauses with pattern matching for readability.
-  """
   def refresh_session(conn, %{}) do
     old_token = Guardian.Plug.current_token(conn)
-
-    claims = Guardian.decode_and_verify(old_token)
-    |> refresh_session_validation()
-
-    account = Guardian.resource_from_claims(claims)
-    |> refresh_session_validation()
-
-    new_token = Guardian.refresh(old_token)
-    |> refresh_session_validation()
-
-    conn
-    |> Plug.Conn.put_session(:account_id, account.id)
-    |> put_status(:ok)
-    |> render("account_token.json", %{account: account, token: new_token})
+    case Guardian.decode_and_verify(old_token) do
+      {:ok, claims} ->
+        case Guardian.resource_from_claims(claims) do
+          {:ok, account} ->
+            {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
+            conn
+            |> Plug.Conn.put_session(:account_id, account.id)
+            |> put_status(:ok)
+            |> render("account_token.json", %{account: account, token: new_token})
+          {:error, _reason} ->
+            raise ErrorResponse.NotFound
+        end
+      {:error, _reason} ->
+        raise ErrorResponse.NotFound
+    end
   end
-
-  defp refresh_session_validation({:ok, value}), do: value
-
-  defp refresh_session_validation({:ok, _old, {value, _claims}}), do: value
-
-  defp refresh_session_validation({:error, _reason}), do: raise ErrorResponse.NotFound
 
   def sign_out(conn, %{}) do
     account = conn.assigns[:account]
