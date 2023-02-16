@@ -1,6 +1,6 @@
 defmodule RealDealApiWeb.AccountView do
   use RealDealApiWeb, :view
-  alias RealDealApiWeb.AccountView
+  alias RealDealApiWeb.{AccountView, UserView}
 
   def render("index.json", %{accounts: accounts}) do
     %{data: render_many(accounts, AccountView, "account.json")}
@@ -15,6 +15,14 @@ defmodule RealDealApiWeb.AccountView do
       id: account.id,
       email: account.email,
       hash_password: account.hash_password
+    }
+  end
+
+  def render("full_account.json", %{account: account}) do
+    %{
+      id: account.id,
+      email: account.email,
+      user: render_one(account.user, UserView, "user.json")
     }
   end
 
