@@ -11,6 +11,7 @@ defmodule RealDealApiWeb.AccountController do
   defp is_authorized_account(conn, _opts) do
     %{params: %{"account" => params}} = conn
     account = Accounts.get_account!(params["id"])
+
     if conn.assigns.account.id == account.id do
       conn
     else
@@ -25,7 +26,7 @@ defmodule RealDealApiWeb.AccountController do
 
   def create(conn, %{"account" => account_params}) do
     with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
-          {:ok, %User{} = _user} <- Users.create_user(account, account_params) do
+         {:ok, %User{} = _user} <- Users.create_user(account, account_params) do
       authorize_account(conn, account.email, account_params["hash_password"])
     end
   end
@@ -41,13 +42,16 @@ defmodule RealDealApiWeb.AccountController do
         |> Plug.Conn.put_session(:account_id, account.id)
         |> put_status(:ok)
         |> render("account_token.json", %{account: account, token: token})
-      {:error, :unauthorized} -> raise ErrorResponse.Unauthorized, message: "Email or Password incorrect."
+
+      {:error, :unauthorized} ->
+        raise ErrorResponse.Unauthorized, message: "Email or Password incorrect."
     end
   end
 
   def refresh_session(conn, %{}) do
     token = Guardian.Plug.current_token(conn)
     {:ok, account, new_token} = Guardian.authenticate(token)
+
     conn
     |> Plug.Conn.put_session(:account_id, account.id)
     |> put_status(:ok)
@@ -58,6 +62,7 @@ defmodule RealDealApiWeb.AccountController do
     account = conn.assigns[:account]
     token = Guardian.Plug.current_token(conn)
     Guardian.revoke(token)
+
     conn
     |> Plug.Conn.clear_session()
     |> put_status(:ok)
