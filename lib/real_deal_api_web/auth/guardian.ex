@@ -35,9 +35,15 @@ defmodule RealDealApiWeb.Auth.Guardian do
     end
   end
 
-  def authenticate(token) do
+  def current_account(token) do
     with {:ok, claims} <- decode_and_verify(token),
-         {:ok, account} <- resource_from_claims(claims),
+         {:ok, account} <- resource_from_claims(claims) do
+      {:ok, account}
+    end
+  end
+
+  def authenticate(token) do
+    with {:ok, account} <- current_account(token),
          {:ok, _old, {new_token, _claims}} <- refresh(token) do
       {:ok, account, new_token}
     end

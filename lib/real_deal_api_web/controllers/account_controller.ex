@@ -9,8 +9,8 @@ defmodule RealDealApiWeb.AccountController do
   action_fallback RealDealApiWeb.FallbackController
 
   defp is_authorized_account(conn, _opts) do
-    %{params: %{"account" => params}} = conn
-    account = Accounts.get_account!(params["id"])
+    token = Guardian.Plug.current_token(conn)
+    {:ok, account} = Guardian.current_account(token)
 
     if conn.assigns.account.id == account.id do
       conn
@@ -39,7 +39,6 @@ defmodule RealDealApiWeb.AccountController do
     case Guardian.authenticate(email, hash_password) do
       {:ok, account, token} ->
         conn
-        |> Plug.Conn.put_session(:account_id, account.id)
         |> put_status(:ok)
         |> render("account_token.json", %{account: account, token: token})
 
@@ -48,12 +47,20 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
+  def current_account(conn, %{}) do
+    user = Users.get_user_by_account_id(conn.assigns.account.id)
+    account = %Account{conn.assigns.account | user: user}
+
+    conn
+    |> put_status(:ok)
+    |> render("full_account.json", %{account: account})
+  end
+
   def refresh_session(conn, %{}) do
     token = Guardian.Plug.current_token(conn)
     {:ok, account, new_token} = Guardian.authenticate(token)
 
     conn
-    |> Plug.Conn.put_session(:account_id, account.id)
     |> put_status(:ok)
     |> render("account_token.json", %{account: account, token: new_token})
   end

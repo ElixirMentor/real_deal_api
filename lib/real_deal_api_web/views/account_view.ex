@@ -13,8 +13,7 @@ defmodule RealDealApiWeb.AccountView do
   def render("account.json", %{account: account}) do
     %{
       id: account.id,
-      email: account.email,
-      hash_password: account.hash_password
+      email: account.email
     }
   end
 
