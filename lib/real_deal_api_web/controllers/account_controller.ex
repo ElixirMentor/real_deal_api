@@ -48,12 +48,9 @@ defmodule RealDealApiWeb.AccountController do
   end
 
   def current_account(conn, %{}) do
-    user = Users.get_user_by_account_id(conn.assigns.account.id)
-    account = %Account{conn.assigns.account | user: user}
-
     conn
     |> put_status(:ok)
-    |> render("full_account.json", %{account: account})
+    |> render("full_account.json", %{account: conn.assigns.account})
   end
 
   def refresh_session(conn, %{}) do

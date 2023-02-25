@@ -12,7 +12,7 @@ defmodule RealDealApiWeb.Auth.Guardian do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    case Accounts.get_account!(id) do
+    case Accounts.get_full_account(id) do
       nil -> {:error, :not_found}
       resource -> {:ok, resource}
     end

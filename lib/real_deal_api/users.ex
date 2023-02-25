@@ -37,12 +37,6 @@ defmodule RealDealApi.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  def get_user_by_account_id(account_id) do
-    User
-    |> where(account_id: ^account_id)
-    |> Repo.one()
-  end
-
   @doc """
   Creates a user.
 
