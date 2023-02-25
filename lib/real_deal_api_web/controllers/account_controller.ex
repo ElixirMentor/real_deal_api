@@ -10,9 +10,9 @@ defmodule RealDealApiWeb.AccountController do
 
   defp is_authorized_account(conn, _opts) do
     token = Guardian.Plug.current_token(conn)
-    {:ok, account} = Guardian.current_account(token)
+    account_id = Guardian.current_account_id(token)
 
-    if conn.assigns.account.id == account.id do
+    if conn.assigns.account.id == account_id do
       conn
     else
       raise ErrorResponse.Forbidden
