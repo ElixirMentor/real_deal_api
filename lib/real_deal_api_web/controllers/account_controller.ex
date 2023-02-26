@@ -4,21 +4,12 @@ defmodule RealDealApiWeb.AccountController do
   alias RealDealApiWeb.{Auth.Guardian, Auth.ErrorResponse}
   alias RealDealApi.{Accounts, Accounts.Account, Users, Users.User}
 
+  import RealDealApiWeb.Auth.AuthorizedAccount
+
   plug :is_authorized_account
        when action in [:refresh_session, :current_account, :update, :sign_out, :delete]
 
   action_fallback RealDealApiWeb.FallbackController
-
-  defp is_authorized_account(conn, _opts) do
-    token = Guardian.Plug.current_token(conn)
-    account_id = Guardian.account_id_by_token(token)
-
-    if conn.assigns.account.id == account_id do
-      conn
-    else
-      raise ErrorResponse.Forbidden
-    end
-  end
 
   def index(conn, _params) do
     accounts = Accounts.list_accounts()
@@ -40,6 +31,7 @@ defmodule RealDealApiWeb.AccountController do
     case Guardian.authenticate(email, hash_password) do
       {:ok, account, token} ->
         conn
+        |> Plug.Conn.put_session(:account_id, account.id)
         |> put_status(:ok)
         |> render("account_token.json", %{account: account, token: token})
 
@@ -59,6 +51,7 @@ defmodule RealDealApiWeb.AccountController do
     {:ok, account, new_token} = Guardian.authenticate(token)
 
     conn
+    |> Plug.Conn.put_session(:account_id, account.id)
     |> put_status(:ok)
     |> render("account_token.json", %{account: account, token: new_token})
   end
@@ -83,7 +76,6 @@ defmodule RealDealApiWeb.AccountController do
     with {:ok, %Account{} = account} <-
            Accounts.update_account(conn.assigns.account, account_params) do
       conn
-      |> assign(:account, account)
       |> render("show.json", account: account)
     end
   end
