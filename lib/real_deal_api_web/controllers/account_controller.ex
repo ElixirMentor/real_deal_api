@@ -4,7 +4,8 @@ defmodule RealDealApiWeb.AccountController do
   alias RealDealApiWeb.{Auth.Guardian, Auth.ErrorResponse}
   alias RealDealApi.{Accounts, Accounts.Account, Users, Users.User}
 
-  plug :is_authorized_account when action in [:update, :delete]
+  plug :is_authorized_account
+       when action in [:refresh_session, :current_account, :update, :sign_out, :delete]
 
   action_fallback RealDealApiWeb.FallbackController
 

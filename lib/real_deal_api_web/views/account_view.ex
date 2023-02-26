@@ -12,14 +12,12 @@ defmodule RealDealApiWeb.AccountView do
 
   def render("account.json", %{account: account}) do
     %{
-      id: account.id,
       email: account.email
     }
   end
 
   def render("full_account.json", %{account: account}) do
     %{
-      id: account.id,
       email: account.email,
       user: render_one(account.user, UserView, "user.json")
     }
@@ -27,7 +25,6 @@ defmodule RealDealApiWeb.AccountView do
 
   def render("account_token.json", %{account: account, token: token}) do
     %{
-      id: account.id,
       email: account.email,
       token: token
     }
