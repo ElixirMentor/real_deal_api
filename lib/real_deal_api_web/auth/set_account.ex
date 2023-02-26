@@ -10,7 +10,7 @@ defmodule RealDealApiWeb.Auth.SetAccount do
       conn
     else
       token = Guardian.Plug.current_token(conn)
-      {:ok, account} = Guardian.current_account(token)
+      {:ok, account} = Guardian.account_by_token(token)
 
       cond do
         account -> assign(conn, :account, account)

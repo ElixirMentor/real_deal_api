@@ -35,24 +35,24 @@ defmodule RealDealApiWeb.Auth.Guardian do
     end
   end
 
-  def current_account(token) do
+  def authenticate(token) do
+    with {:ok, account} <- account_by_token(token),
+         {:ok, _old, {new_token, _claims}} <- refresh(token) do
+      {:ok, account, new_token}
+    end
+  end
+
+  def account_by_token(token) do
     with {:ok, claims} <- decode_and_verify(token),
          {:ok, account} <- resource_from_claims(claims) do
       {:ok, account}
     end
   end
 
-  def current_account_id(token) do
+  def account_id_by_token(token) do
     case decode_and_verify(token) do
       {:ok, %{"sub" => id}} -> id
       {:error, _reason} -> nil
-    end
-  end
-
-  def authenticate(token) do
-    with {:ok, account} <- current_account(token),
-         {:ok, _old, {new_token, _claims}} <- refresh(token) do
-      {:ok, account, new_token}
     end
   end
 
