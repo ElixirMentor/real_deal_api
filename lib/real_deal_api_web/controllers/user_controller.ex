@@ -35,10 +35,8 @@ defmodule RealDealApiWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{}} <- Users.delete_user(user) do
+  def delete(conn, %{}) do
+    with {:ok, %User{}} <- Users.delete_user(conn.assigns.account.user) do
       send_resp(conn, :no_content, "")
     end
   end
