@@ -7,7 +7,7 @@ defmodule RealDealApiWeb.AccountController do
   import RealDealApiWeb.Auth.AuthorizedAccount
 
   plug :is_authorized_account
-       when action in [:refresh_session, :current_account, :update, :sign_out, :delete]
+       when action in [:refresh_session, :current_account, :change_password, :sign_out, :delete]
 
   action_fallback RealDealApiWeb.FallbackController
 
@@ -72,11 +72,14 @@ defmodule RealDealApiWeb.AccountController do
     render(conn, "full_account.json", account: account)
   end
 
-  def update(conn, %{"account" => account_params}) do
-    with {:ok, %Account{} = account} <-
-           Accounts.update_account(conn.assigns.account, account_params) do
-      conn
-      |> render("show.json", account: account)
+  def change_password(conn, %{"current_hash" => current_hash, "new_hash" => new_hash}) do
+    case Guardian.validate_password(current_hash, conn.assigns.account.hash_password) do
+      true ->
+        {:ok, account} = Accounts.update_account(conn.assigns.account, %{hash_password: new_hash})
+        render(conn, "show.json", account: account)
+
+      false ->
+        raise ErrorResponse.Unauthorized, message: "Password incorrect."
     end
   end
 
