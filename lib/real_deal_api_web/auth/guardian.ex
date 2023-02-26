@@ -25,7 +25,7 @@ defmodule RealDealApiWeb.Auth.Guardian do
   def authenticate(email, password) do
     case Accounts.get_account_by_email(email) do
       nil ->
-        {:error, :unauthored}
+        {:error, :unauthorized}
 
       account ->
         case validate_password(password, account.hash_password) do

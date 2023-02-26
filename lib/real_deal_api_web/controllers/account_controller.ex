@@ -79,17 +79,16 @@ defmodule RealDealApiWeb.AccountController do
   end
 
   def update(conn, %{"account" => account_params}) do
-    account = Accounts.get_account!(account_params["id"])
-
-    with {:ok, %Account{} = account} <- Accounts.update_account(account, account_params) do
-      render(conn, "show.json", account: account)
+    with {:ok, %Account{} = account} <-
+           Accounts.update_account(conn.assigns.account, account_params) do
+      conn
+      |> assign(:account, account)
+      |> render("show.json", account: account)
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    account = Accounts.get_account!(id)
-
-    with {:ok, %Account{}} <- Accounts.delete_account(account) do
+  def delete(conn, %{}) do
+    with {:ok, %Account{}} <- Accounts.delete_account(conn.assigns.account) do
       send_resp(conn, :no_content, "")
     end
   end
