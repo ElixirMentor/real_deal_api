@@ -4,9 +4,9 @@ defmodule RealDealApiWeb.UserController do
   alias RealDealApi.Users
   alias RealDealApi.Users.User
 
-  import RealDealApiWeb.Auth.AuthorizedAccount
+  import RealDealApiWeb.Auth.AuthorizedPlug
 
-  plug :is_authorized_account
+  plug :is_authorized
        when action in [:update, :delete]
 
   action_fallback RealDealApiWeb.FallbackController

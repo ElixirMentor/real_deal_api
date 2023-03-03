@@ -1,7 +1,7 @@
-defmodule RealDealApiWeb.Auth.AuthorizedAccount do
+defmodule RealDealApiWeb.Auth.AuthorizedPlug do
   alias RealDealApiWeb.{Auth.ErrorResponse}
 
-  def is_authorized_account(%{params: %{"account" => params}} = conn, _opts) do
+  def is_authorized(%{params: %{"account" => params}} = conn, _opts) do
     if conn.assigns.account.id == params["id"] do
       conn
     else
@@ -9,7 +9,7 @@ defmodule RealDealApiWeb.Auth.AuthorizedAccount do
     end
   end
 
-  def is_authorized_account(%{params: %{"user" => params}} = conn, _opts) do
+  def is_authorized(%{params: %{"user" => params}} = conn, _opts) do
     if conn.assigns.account.user.id == params["id"] do
       conn
     else
