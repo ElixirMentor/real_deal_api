@@ -49,13 +49,6 @@ defmodule RealDealApiWeb.Auth.Guardian do
     end
   end
 
-  def account_id_by_token(token) do
-    case decode_and_verify(token) do
-      {:ok, %{"sub" => id}} -> id
-      {:error, _reason} -> nil
-    end
-  end
-
   def validate_password(password, hash_password) do
     Bcrypt.verify_pass(password, hash_password)
   end

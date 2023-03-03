@@ -12,6 +12,7 @@ defmodule RealDealApiWeb.UserView do
 
   def render("user.json", %{user: user}) do
     %{
+      id: user.id,
       full_name: user.full_name,
       gender: user.gender,
       biography: user.biography

@@ -1,11 +1,16 @@
 defmodule RealDealApiWeb.Auth.AuthorizedAccount do
-  alias RealDealApiWeb.{Auth.Guardian, Auth.ErrorResponse}
+  alias RealDealApiWeb.{Auth.ErrorResponse}
 
-  def is_authorized_account(conn, _opts) do
-    token = Guardian.Plug.current_token(conn)
-    account_id = Guardian.account_id_by_token(token)
+  def is_authorized_account(%{params: %{"account" => params}} = conn, _opts) do
+    if conn.assigns.account.id == params["id"] do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
 
-    if conn.assigns.account.id == account_id do
+  def is_authorized_account(%{params: %{"user" => params}} = conn, _opts) do
+    if conn.assigns.account.user.id == params["id"] do
       conn
     else
       raise ErrorResponse.Forbidden

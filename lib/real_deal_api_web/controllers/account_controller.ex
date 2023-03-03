@@ -7,7 +7,7 @@ defmodule RealDealApiWeb.AccountController do
   import RealDealApiWeb.Auth.AuthorizedAccount
 
   plug :is_authorized_account
-       when action in [:refresh_session, :current_account, :change_password, :sign_out, :delete]
+       when action in [:change_password, :sign_out, :delete]
 
   action_fallback RealDealApiWeb.FallbackController
 
