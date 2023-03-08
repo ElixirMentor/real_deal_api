@@ -6,7 +6,7 @@ defmodule RealDealApiWeb.AccountController do
 
   import RealDealApiWeb.Auth.AuthorizedPlug
 
-  plug :is_authorized when action in [:update, :delete]
+  plug :is_authorized, %{resource: :account} when action in [:update, :delete]
 
   action_fallback RealDealApiWeb.FallbackController
 
