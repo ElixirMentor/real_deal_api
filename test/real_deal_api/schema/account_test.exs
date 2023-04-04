@@ -1,6 +1,5 @@
 defmodule RealDealApi.Schema.AccountTest do
-  use ExUnit.Case
-  alias Ecto.Changeset
+  use RealDealApi.Support.SchemaCase
   alias RealDealApi.Accounts.Account
 
   @expected_fields_with_types [
@@ -27,13 +26,7 @@ defmodule RealDealApi.Schema.AccountTest do
 
   describe "changeset/2" do
     test "success: returns a valid changeset when given valid arguments" do
-      valid_params = %{
-        "id" => Ecto.UUID.generate(),
-        "email" => "test@email.com",
-        "hash_password" => "test password",
-        "inserted_at" => NaiveDateTime.local_now(),
-        "updated_at" => NaiveDateTime.local_now()
-      }
+      valid_params = valid_params(@expected_fields_with_types)
 
       changeset = Account.changeset(%Account{}, valid_params)
 
