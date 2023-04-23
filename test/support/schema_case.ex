@@ -8,6 +8,10 @@ defmodule RealDealApi.Support.SchemaCase do
     end
   end
 
+  setup _ do
+    Ecto.Adapters.SQL.Sandbox.mode(RealDealApi.Repo, :manual)
+  end
+
   def valid_params(fields_with_types) do
     valid_value_by_type = %{
       binary_id: fn -> Faker.UUID.v4() end,
