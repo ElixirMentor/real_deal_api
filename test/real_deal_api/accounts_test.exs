@@ -88,4 +88,14 @@ defmodule RealDealApi.AccountsTest do
       assert existing_account == Repo.get(Account, existing_account.id)
     end
   end
+
+  describe "delete_account/1" do
+    test "success: it deletes the account" do
+      account = Factory.insert(:account)
+
+      assert {:ok, _deteted_account} = Accounts.delete_account(account)
+
+      refute Repo.get(Account, account.id)
+    end
+  end
 end
