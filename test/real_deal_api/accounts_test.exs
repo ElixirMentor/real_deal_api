@@ -52,4 +52,40 @@ defmodule RealDealApi.AccountsTest do
       end
     end
   end
+
+  describe "update_account/2" do
+    test "success: it updates database and returns the account" do
+      existing_account = Factory.insert(:account)
+
+      params =
+        Factory.string_params_for(:account)
+        |> Map.take(["email"])
+
+      assert {:ok, returned_account} = Accounts.update_account(existing_account, params)
+
+      account_from_db = Repo.get(Account, returned_account.id)
+
+      assert returned_account == account_from_db
+
+      expected_account_data =
+        existing_account
+        |> Map.from_struct()
+        |> Map.put(:email, params["email"])
+
+      for {field, expected} <- expected_account_data do
+        actual = Map.get(account_from_db, field)
+
+        assert actual == expected,
+               "Values did not match for field: #{field}\nexpected: #{inspect(expected)}\nactual: #{inspect(actual)}"
+      end
+    end
+
+    test "error: returns an error tuple when account can't be updated" do
+      existing_account = Factory.insert(:account)
+      bad_params = %{"email" => NaiveDateTime.utc_now()}
+      assert {:error, %Changeset{}} = Accounts.update_account(existing_account, bad_params)
+
+      assert existing_account == Repo.get(Account, existing_account.id)
+    end
+  end
 end
