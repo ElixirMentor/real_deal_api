@@ -88,6 +88,7 @@ defmodule RealDealApi.AccountsTest do
       assert existing_account == Repo.get(Account, existing_account.id)
     end
   end
+<<<<<<< HEAD
 
   describe "delete_account/1" do
     test "success: it deletes the account" do
@@ -98,4 +99,6 @@ defmodule RealDealApi.AccountsTest do
       refute Repo.get(Account, account.id)
     end
   end
+=======
+>>>>>>> eb806d1406c9c5e600180b8711c6ec96314f7453
 end
